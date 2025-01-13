@@ -1015,21 +1015,21 @@ int makeop(struct opcode * op, struct mode *m, int add)
  *	of code. (using a large bit field).
  *
  */
-
-#define indx(a) ( (a)/(sizeof(long)*8) )
-#define bit(a)	( 1 << ((a)%(sizeof(long)*8)) )
+typedef unsigned long bitfield_t;
+#define indx(a) ( (a)/(sizeof(bitfield_t)*8) )
+#define bit(a)	( (bitfield_t) 1 << ((a)%(sizeof(bitfield_t)*8)) )
 
 #define getloc(a) (regions[indx(a)] & bit(a))
 #define setloc(a) (regions[indx(a)] |= bit(a))
 
-static unsigned long regions[ 0x10000/(sizeof(long)*8) ];
+static bitfield_t regions[ 0x10000/(sizeof(bitfield_t)*8) ];
 
 void inclc(int i)
 {
 
 	while (i-- > 0) {
 		if( pass2 && getloc(lc) )
-			error("Location counter overlaps");
+			error("Location counter overlaps on byte %lu", lc);
 		if( pass2 ) setloc(lc);
 		lc += 1;
 	}
@@ -1083,7 +1083,7 @@ void dumplist(char *txt, int show)
 {
 	int i,j;
 
-	fprintf(listing,show?"%04X: ":"      ",lc);
+	fprintf(listing,show?"%04lX: ":"      ",lc);
 
 	j=0;
 	for(i=0; i<bytecount; i++ ) {
