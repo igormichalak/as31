@@ -1,0 +1,14 @@
+# Executable
+as31
+
+# Parser
+parser.h
+parser.c
+
+# Object files
+as31.o
+emitter.o
+symbol.o
+lexer.o
+parser.o
+run.o
